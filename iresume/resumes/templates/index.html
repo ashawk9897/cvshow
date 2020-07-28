@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{name}} Curriculum Vitae</title>
+
+    <meta name="viewport" content="width=device-width"/>
+    <meta name="description" content="The Curriculum Vitae of Joe Bloggs."/>
+    <meta charset="UTF-8">
+
+    <link type="text/css" rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href='http://fonts.googleapis.com/css?family=Rokkitt:400,700|Lato:400,300' rel='stylesheet' type='text/css'>
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body id="top">
+<div id="cv" class="instaFade">
+
+    {% if user.is_authenticated %}
+    <div class="col-lg-12">
+        <div class="col-lg-6">
+            <button><a class="btn btn-primary" href="{% url 'resumes:edit' %}">Edit</a></button>
+        </div>
+        <div class="col-lg-6">
+            <button style="float:right"><a class="btn btn-primary" href="{% url 'logout' %}">Logout</a></button>
+        </div>
+    </div>
+    {% endif %}
+    <div class="mainDetails">
+
+        <!--        <div id="headshot" class="">-->
+        <!--            <img src="{% static 'images/ashok.jpg' %}" alt="Alan Smith"/>-->
+        <!--        </div>-->
+        <div id="name">
+            <h1 class="c_name">{{name}}</h1>
+            <h2 class="c_name">{{job_title}}</h2>
+        </div>
+
+        <div id="contactDetails" class=" ">
+            <ul>
+                <li>Email: <a href="#">
+                    <target
+                    ="_blank">{{email}}</a></li>
+                <li>Contact: <a href="http://www.bloggs.com">{{contact}}</a></li>
+            </ul>
+        </div>
+        <div class="clear"></div>
+    </div>
+
+    <div id="mainArea" class=" ">
+        <section>
+            <article>
+                <div class="sectionTitle">
+                    <h1>Personal Profile</h1>
+                </div>
+
+                <div class="sectionContent">
+                    <p>{{personal_profile}}</p>
+                </div>
+            </article>
+            <div class="clear"></div>
+        </section>
+        {% if work_experience %}
+        <section>
+            <div class="sectionTitle">
+                <h1>Work Experience</h1>
+            </div>
+
+            <div class="sectionContent">
+                {% for work in work_experience %}
+                <article>
+                    <h2 class="c_name">{{work.company_name}}</h2>
+                    <p class="subDetails">{{work.start}} - {{work.end}}</p>
+                    <!--					<h3 class="c_name">Responsibility</h3>-->
+                    <ul>
+                        {% for r in work.responsibility %}
+                        <p>{{r}}</p>
+                        {% endfor %}
+                    </ul>
+                </article>
+                {% endfor %}
+            </div>
+            <div class="clear"></div>
+        </section>
+        {% endif %}
+
+        {% if key_skills %}
+        <section>
+            <div class="sectionTitle">
+                <h1>Key Skills</h1>
+            </div>
+
+            <div class="sectionContent">
+                <ul class="keySkills">
+                    {% for skill in key_skills %}
+                    <li>{{skill}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="clear"></div>
+        </section>
+        {% endif %}
+
+        {% if education %}
+        <section>
+            <div class="sectionTitle">
+                <h1>Education</h1>
+            </div>
+
+            <div class="sectionContent">
+                <table>
+                    <tr>
+                        <th>College/School</th>
+                        <th>University</th>
+                        <th>Qualification</th>
+                        <th>Start</th>
+                        <th>end</th>
+                        <th>Percentage</th>
+                    </tr>
+                    {% for ed in education %}
+                    <tr>
+                        <td>{{ed.college_name}}</td>
+                        <td class="c_name">{{ed.university}}</td>
+                        <td class="c_name">{{ed.percentage}} %</td>
+                        <td class="c_name">{{ed.qualification}}</td>
+                        <td>{{ed.start}}</td>
+                        <td>{{ed.end}}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            </article>
+
+    <div class="clear"></div>
+    </section>
+        {% endif %}
+
+</div>
+</div>
+</body>
+</html>

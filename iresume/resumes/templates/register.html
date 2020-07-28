@@ -1,0 +1,10 @@
+{% extends 'loginbase.html' %}
+{% load static %}
+{% block login%}
+      <form class="login-form" role="form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% include 'form_template.html' %}
+       <button type="submit">Create</button>
+      <p class="message">Already registered? <a href="{% url 'login' %}">Sign In</a></p>
+    </form>
+{% endblock%}
