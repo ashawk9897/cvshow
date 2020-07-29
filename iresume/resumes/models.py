@@ -38,7 +38,6 @@ class ExperienceForm(forms.ModelForm):
         }
 
 
-
 class Education(models.Model):
     id = models.AutoField(primary_key=True)
     start = models.CharField(max_length=100)
@@ -74,7 +73,9 @@ class ResumeData(models.Model):
     email = models.CharField(max_length=200)
     contact = models.BigIntegerField(max_length=12, null=True)
     personal_profile = models.TextField(null=True)
-    work_experience = ArrayField(JSONField(Experience), null=True)
-    key_skills = ArrayField(models.TextField(null=True, blank=True), blank=True, null=True)
-    education = ArrayField(JSONField(Education), null=True)
+    work_experience = models.TextField(null=True)
+    key_skills = models.TextField(null=True)
+    education = models.TextField(null=True)
+    post_qs = models.TextField(null=True)
+    post_as = models.TextField(null=True)
     # objects = models.DjongoManager()

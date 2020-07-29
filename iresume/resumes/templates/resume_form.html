@@ -18,18 +18,11 @@
                 localStorage.setItem('activeTab', $(e.target).attr('href'));
             });
             var activeTab = localStorage.getItem('activeTab');
+            console.log(localStorage.getItem('activeTab'))
             if(activeTab){
                 $('#resume_tabs a[href="' + activeTab + '"]').tab('show');
             }
         });
-
-
-
-
-
-
-
-
 
 
 
@@ -84,6 +77,10 @@
 
 
 
+
+
+
+
 </style>
 <body>
 <button><a href="{% url 'resumes:resume'  username=request.user %}">Resume</a></button>
@@ -93,6 +90,7 @@
         <li><a href="#2b" data-toggle="tab">Work Experience</a></li>
         <li><a href="#3b" data-toggle="tab">Education</a></li>
         <li><a href="#4b" data-toggle="tab">Skills</a></li>
+        <li><a href="#5b" data-toggle="tab">Blog Posts</a></li>
     </ul>
 
     <div class="tab-content clearfix">
@@ -296,15 +294,61 @@
                     </div>
                 </form>
 
-                    <div class="btn-group" role="group" aria-label="Basic example">
-                        {% for skill in key_skills %}
-                        <button type="button" class="btn btn-secondary">{{skill}}</button>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    {% for skill in key_skills %}
+                    <button type="button" class="btn btn-secondary">{{skill}}</button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="5b">
+            <div class="container-fluid">
+                <div class="form-row">
+                    {% for post in posts %}
+
+                    <form action="{% url 'resumes:posts' %}" method="post" role="form">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <H2>{{post.0}}</H2>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-8">
+                                <textarea class="form-control" name="post" value="{{post.1}}"></textarea>
+                                <input type="hidden" name="post_id" value={{ forloop.counter0 }}>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <button type="submit" class="btn btn-default" id="add-btn">Update</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    {% endfor %}
+                </div>
+            </div>
+
+                <H2>Previous Answers</H2>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    {% for post in posts %}
+                    <div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item"><h2 class="c_name">{{post.0}}</h2></li>
+                                        <li class="list-group-item">{{post.1}}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
-</div>
+    </div>
+
 
 </body>
 </html>

@@ -6,6 +6,37 @@ from django.db import connection
 from django.views.generic import View
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+import json
+
+
+def cleandata(data):
+    serialized = ResumeDataSerializer(data)
+    work_experience = []
+    education = []
+    basicdata = {}
+    key_skills = []
+    for d in serialized:
+        # print(d.name)
+        # print(d.value)
+        # print(type(d.value))
+        if d.name == 'work_experience':
+            work_experience = json.loads(d.value)
+        elif d.name == 'key_skills':
+            key_skills = json.loads(d.value)
+        elif d.name == 'education':
+            education = json.loads(d.value)
+        elif d.name == 'post_qs':
+            post_qs = json.loads(d.value)
+        elif d.name == 'post_as':
+            print(d.value)
+            post_as = json.loads(d.value)
+        else:
+            basicdata[d.name] = d.value
+    basicdata.update({'work_experience': work_experience[::-1],
+                      'education': education[::-1],
+                      'key_skills': key_skills,
+                      'posts': list(zip(post_qs, post_as))})
+    return basicdata
 
 
 # Create your views here.
@@ -14,7 +45,7 @@ def home(request, username):
         print(username)
         data = ResumeData.objects.get(username=username)
         print(data)
-        basicdata = ResumeDataSerializer(data).data
+        basicdata = cleandata(data)
         return render(request, 'index.html', context=basicdata)
 
 
@@ -39,14 +70,13 @@ def editmode(request):
         print(data)
     except Exception:
         return redirect('login')
-    user_data = ResumeDataSerializer(data).data
+    user_data = cleandata(data)
     user_data.update({'form': form, 'exp_form': exp_form, 'edu_form': edu_form})
     return render(request, 'resume_form.html', context=user_data)
 
 
 @login_required(login_url='login')
 def workexperience(request):
-    print('WWWWWWWWWWWWWWWWWWWW')
     current_user = request.user
     if request.method == 'POST':
         form = ExperienceForm(request.POST)
@@ -54,17 +84,18 @@ def workexperience(request):
         start = request.POST.get('start')
         end = request.POST.get('end')
         responsibility = request.POST.get('responsibility')
-        responsibility = responsibility.strip(' ').strip('>').split('.')
+        responsibility = responsibility.strip(' ').split('.')
         previous_data = ResumeData.objects.get(username=current_user)
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAaa")
         print(previous_data.work_experience)
+        previous_data.work_experience = json.loads(previous_data.work_experience)
         if not previous_data.work_experience:
             previous_data.work_experience = []
         previous_data.work_experience.append({'company_name': company_name, 'start': start, 'end': end,
                                               'responsibility': responsibility})
         if form.is_valid():
             try:
-                ResumeData.objects.filter(username=current_user).update(work_experience=previous_data.work_experience)
+                ResumeData.objects.filter(username=current_user).update(
+                    work_experience=json.dumps(previous_data.work_experience))
                 return redirect('resumes:edit')
             except:
                 return render(request, 'error.html', {})
@@ -82,6 +113,7 @@ def education(request):
         qualification = request.POST.get('qualification')
         percentage = request.POST.get('percentage')
         previous_data = ResumeData.objects.get(username=current_user)
+        previous_data.education = json.loads(previous_data.education)
         if not previous_data.education:
             previous_data.education = []
         previous_data.education.append({'college_name': college_name, 'start': start, 'end': end,
@@ -90,7 +122,7 @@ def education(request):
 
         if form.is_valid():
             try:
-                ResumeData.objects.filter(username=current_user).update(education=previous_data.education)
+                ResumeData.objects.filter(username=current_user).update(education=json.dumps(previous_data.education))
                 return redirect('resumes:edit')
             except:
                 return render(request, 'error.html', {})
@@ -104,12 +136,37 @@ def skills(request):
         skills = request.POST.get('key_skill')
         skills = skills.split(',')
         previous_data = ResumeData.objects.get(username=current_user)
+        previous_data.key_skills = json.loads(previous_data.key_skills)
         if not previous_data.key_skills: previous_data.key_skills = []
         previous_data.key_skills.extend(skills)
-        with connection.cursor() as cursor:
-            cursor.execute('UPDATE "resumes_resumedata" SET "key_skills"=%s where  "resumes_resumedata"."username"=%s',
-                           (previous_data.key_skills, current_user.username))
-        return redirect('resumes:edit')
+        try:
+            ResumeData.objects.filter(username=current_user).update(key_skills=json.dumps(previous_data.key_skills))
+            return redirect('resumes:edit')
+        except:
+            return render(request, 'error.html', {})
+
+
+@login_required(login_url='login')
+def posts(request):
+    current_user = request.user
+    if request.method == 'POST':
+
+        post_id = request.POST.get('post_id')
+        post = request.POST.get('post')
+        print(post, post_id)
+        previous_data = ResumeData.objects.get(username=current_user)
+        previous_data.post_qs = json.loads(previous_data.post_qs)
+        previous_data.post_as = json.loads(previous_data.post_as)
+        if len(post) > 0 and len(previous_data.post_as) > int(post_id) >= 0:
+            previous_data.post_as[int(post_id)] = post
+            try:
+                ResumeData.objects.filter(username=current_user).update(post_as=json.dumps(previous_data.post_as))
+                return redirect('resumes:edit')
+            except Exception as e:
+                print(e)
+                return render(request, 'error.html', {})
+        else:
+            return redirect('resumes:edit')
 
 
 class UserFormView(View):
@@ -138,8 +195,8 @@ class UserFormView(View):
                 print(username, name, email, contact, '', '', [], [], [])
                 cursor.execute(
                     'INSERT INTO  "resumes_resumedata" ("username", "name", "email","contact",\
-                    "job_title","personal_profile","work_experience","key_skills","education") VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)',
-                    (username, name, email, contact, '', '', [], [], []))
+                    "job_title","personal_profile","work_experience","key_skills","education","post_qs","post_as") VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',
+                    (username, name, email, contact, '', '', '[]', '[]', '[]', '[]', '[]'))
             user.save()
             user = authenticate(username=username, password=password)
 

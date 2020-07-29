@@ -9,5 +9,6 @@ urlpatterns = [
     path('edit', views.editmode, name='edit'),
     path('edit/work', views.workexperience, name='work'),
     path('edit/edu', views.education, name='edu'),
-    path('edit/skills', views.skills, name='skills')
+    path('edit/skills', views.skills, name='skills'),
+    path('edit/posts', views.posts, name='posts')
 ]
