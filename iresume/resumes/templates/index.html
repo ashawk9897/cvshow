@@ -8,13 +8,13 @@
     <meta name="description" content="The Curriculum Vitae of Joe Bloggs."/>
     <meta charset="UTF-8">
 
-    <link type="text/css" rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link href="{% static 'css/fonts.css' %}" rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="{% static 'css/fonts.css' %}" rel='stylesheet'>
 
-<!--    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>-->
-<!--    <script>-->
-<!--            localStorage.setItem('activeTab', '#1b');-->
-<!--    </script>-->
+    <!--    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>-->
+    <!--    <script>-->
+    <!--            localStorage.setItem('activeTab', '#1b');-->
+    <!--    </script>-->
 </head>
 <body id="top">
 <div id="cv" class="instaFade">
@@ -23,8 +23,10 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="col-lg-4">
-                <button id="resume_btn" style="float:right;display:none"  onclick="showBlogs(this.id)"><a class="btn btn-primary" href="#">Resume</a></button>
-                <button id="blog_btn" style="float:right;"  onclick="showBlogs(this.id)"><a class="btn btn-primary" href="#">My Blog</a></button>
+                <button id="resume_btn" style="float:right;display:none" onclick="showBlogs(this.id)"><a
+                        class="btn btn-primary" href="#">Resume</a></button>
+                <button id="blog_btn" style="float:right;" onclick="showBlogs(this.id)"><a class="btn btn-primary"
+                                                                                           href="#">My Blog</a></button>
             </div>
             <div class="col-lg-4">
                 <button style="float:right"><a class="btn btn-primary" href="{% url 'resumes:edit' %}">Edit</a></button>
@@ -59,7 +61,7 @@
 
         <div id="mainArea" class=" ">
             <div id="blog" style="display:none" class=" ">
-<!--                <H1 class="c_name" style="color:#48337c">My Blog</H1>-->
+                <!--                <H1 class="c_name" style="color:#48337c">My Blog</H1>-->
                 {% for post in posts %}
                 <section>
                     <article>
@@ -190,6 +192,7 @@
 
 
     }
+
 </script>
 </body>
 </html>
