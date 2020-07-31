@@ -1,0 +1,354 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit</title>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <!--    <meta charset="utf-8">-->
+    <!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">-->
+    <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>-->
+    <!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>-->
+    <script>
+        $(document).ready(function(){
+            $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+                localStorage.setItem('activeTab', $(e.target).attr('href'));
+            });
+            var activeTab = localStorage.getItem('activeTab');
+            console.log(localStorage.getItem('activeTab'))
+            if(activeTab){
+                $('#resume_tabs a[href="' + activeTab + '"]').tab('show');
+            }
+        });
+
+
+
+
+    </script>
+</head>
+<style>
+    body {
+  padding : 10px ;
+
+}
+
+#exTab1 .tab-content {
+  color : white;
+  background-color: #428bca;
+  padding : 5px 15px;
+}
+
+#exTab2 h3 {
+  color : white;
+  background-color: #428bca;
+  padding : 5px 15px;
+}
+
+/* remove border radius for the tab */
+
+#exTab1 .nav-pills > li > a {
+  border-radius: 0;
+}
+
+/* change border radius for the tab , apply corners on top*/
+
+#exTab3 .nav-pills > li > a {
+  border-radius: 4px 4px 0 0 ;
+}
+
+#exTab3 .tab-content {
+  color : black;
+  background-color: #428bca;
+  padding : 5px 15px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</style>
+<body>
+<button><a href="{% url 'resumes:resume'  username=request.user %}">Resume</a></button>
+<div id="exTab3" class="container">
+    <ul class="nav nav-pills" id="resume_tabs">
+        <li class="active"><a href="#1b" data-toggle="tab">Basic</a></li>
+        <li><a href="#2b" data-toggle="tab">Work Experience</a></li>
+        <li><a href="#3b" data-toggle="tab">Education</a></li>
+        <li><a href="#4b" data-toggle="tab">Skills</a></li>
+        <li><a href="#5b" data-toggle="tab">Blog Posts</a></li>
+    </ul>
+
+    <div class="tab-content clearfix">
+        <div class="tab-pane active" id="1b">
+            <div class="container-fluid" id="wrapper">
+                <h2>Update Basic Information</h2>
+                <div class="row basicform">
+                    <div class="col-lg-12">
+                        <form action="{% url 'resumes:edit' %}" method="POST" role="form">
+                            {% csrf_token %}
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ form.email }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{ form.contact }}
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                {{ form.personal_profile }}
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    {{ form.job_title }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <button type="submit" class="btn btn-default" id="add-btn">UPDATE</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">{{name}}</li>
+                                    <li class="list-group-item">{{email}}</li>
+                                    <li class="list-group-item">{{contact}}</li>
+                                    <li class="list-group-item">{{job_title}}</li>
+                                    <li class="list-group-item">{{personal_profile}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="2b">
+            <form action="{% url 'resumes:work' %}" method="POST" role="form">
+                <h2>Enter your experience</h2>
+                {% csrf_token %}
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="form-group col-md-2">
+                            <label>Company Name</label>
+                            {{exp_form.company_name}}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-2">
+                            <label>Start Date</label>
+                            {{ exp_form.start }}
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label>End Date</label>
+                            {{ exp_form.end }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label>Responsibility</label>
+                            {{exp_form.responsibility}}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-1">
+                            <span class="input-group-btn" style="">
+                    <button type="submit" class="btn btn-default" id="add-btn">ADD</button></span>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </form>
+            <h2>Experiences</h2>
+            {% for work in work_experience %}
+            <div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><h2 class="c_name">{{work.company_name}}</h2></li>
+                                <li class="list-group-item">{{work.start}} - {{work.end}}</li>
+                                <li class="list-group-item">Responsibility
+                                    <ul>
+                                        {% for r in work.responsibility %}
+                                        <li class="list-group-item">{{r}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="tab-pane" id="3b">
+            <div class="container-fluid">
+
+                <div class="row basicform">
+                    <form action="{% url 'resumes:edu' %}" method="POST" role="form">
+                        <h2>Enter your Education</h2>
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label>College/School</label>
+                                    {{ edu_form.college_name }}
+                                </div>
+
+                                <div class="form-group col-md-2">
+                                    <label>Start Date</label>
+                                    {{ edu_form.start }}
+                                </div>
+
+                                <div class="form-group col-md-2">
+                                    <label>End Date</label>
+                                    {{ edu_form.end }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label>University</label>
+                                    {{ edu_form.university }}
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label>Qualification</label>
+                                    {{ edu_form.qualification }}
+                                </div>
+
+                                <div class="form-group col-md-2">
+                                    <label>Percentage</label>
+                                    {{ edu_form.percentage }}
+                                </div>
+
+                                <div class="form-group col-md-2">
+                                        <span class="input-group-btn" style="">
+								  <button type="submit" class="btn btn-default" id="add-btn">ADD</button></span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+
+                <H2>Your Educations</H2>
+
+                {% for edu in education %}
+                <div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"><h2 class="c_name">{{edu.college_name}}</h2></li>
+                                    <li class="list-group-item"><h2 class="c_name">{{edu.university}}</h2></li>
+                                    <li class="list-group-item">{{edu.qualification}} - {{edu.percentage}}%</li>
+                                    <li class="list-group-item">{{edu.start}} - {{edu.end}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+
+            </div>
+        </div>
+
+        <div class="tab-pane" id="4b">
+            <div class="container-fluid">
+                <form action="{% url 'resumes:skills' %}" method="post" role="form">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <input class="form-control" type="text" name="key_skill"
+                                   placeholder="Skills  (Multiple skills can be added by using , ) "/>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button type="submit" class="btn btn-default" id="add-btn">ADD</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    {% for skill in key_skills %}
+                    <button type="button" class="btn btn-secondary">{{skill}}</button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="5b">
+            <div class="container-fluid">
+                <div class="form-row">
+                    {% for post in posts %}
+
+                    <form action="{% url 'resumes:posts' %}" method="post" role="form">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <H2>{{post.0}}</H2>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-8">
+                                <textarea class="form-control" name="post" value="{{post.1}}"></textarea>
+                                <input type="hidden" name="post_id" value={{ forloop.counter0 }}>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <button type="submit" class="btn btn-default" id="add-btn">Update</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    {% endfor %}
+                </div>
+            </div>
+
+                <H2>Previous Answers</H2>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    {% for post in posts %}
+                    <div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item"><h2 class="c_name">{{post.0}}</h2></li>
+                                        <li class="list-group-item">{{post.1}}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
