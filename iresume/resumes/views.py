@@ -139,8 +139,11 @@ def skills(request):
     current_user = request.user
 
     if request.method == 'POST':
-        skills = request.POST.get('key_skill')
-        skills = skills.split(',')
+        skills = request.POST.get('key_skill', '')
+        if skills.strip() is not '':
+            skills = skills.strip().split(',')
+        else:
+            return redirect('resumes:edit')
         previous_data = ResumeData.objects.get(username=current_user)
         previous_data.key_skills = json.loads(previous_data.key_skills)
         if not previous_data.key_skills: previous_data.key_skills = []
@@ -208,12 +211,6 @@ class UserFormView(View):
                                      education='[]',
                                      post_as='[]')
             resume_data.save()
-            # with connection.cursor() as cursor:
-            #     print(username, name, email, contact, '', '', [], [], [])
-            #     cursor.execute(
-            #         'INSERT INTO  "resumes_resumedata" ("username", "name", "email","contact",\
-            #         "job_title","personal_profile","work_experience","key_skills","education","post_as") VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',
-            #         (username, name, email, contact, '', '', '[]', '[]', '[]', '[]'))
             user.save()
             user = authenticate(username=username, password=password)
 
