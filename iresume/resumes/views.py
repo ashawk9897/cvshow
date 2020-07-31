@@ -26,10 +26,16 @@ def cleandata(data):
         elif d.name == 'education':
             education = json.loads(d.value)
         elif d.name == 'post_qs':
+            print(d.value)
             post_qs = json.loads(d.value)
         elif d.name == 'post_as':
             print(d.value)
-            post_as = json.loads(d.value)
+            if d.value == '[]':
+                post_as = []
+                for q in post_qs:
+                    post_as.append('Not answered')
+            else:
+                post_as = json.loads(d.value)
         else:
             basicdata[d.name] = d.value
     basicdata.update({'work_experience': work_experience[::-1],
@@ -191,12 +197,23 @@ class UserFormView(View):
             name = form.cleaned_data['first_name']
             contact = form.cleaned_data['contact']
             user.set_password(password)
-            with connection.cursor() as cursor:
-                print(username, name, email, contact, '', '', [], [], [])
-                cursor.execute(
-                    'INSERT INTO  "resumes_resumedata" ("username", "name", "email","contact",\
-                    "job_title","personal_profile","work_experience","key_skills","education","post_qs","post_as") VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',
-                    (username, name, email, contact, '', '', '[]', '[]', '[]', '[]', '[]'))
+            resume_data = ResumeData(username=username,
+                                     name=name,
+                                     email=email,
+                                     contact=contact,
+                                     job_title='',
+                                     personal_profile='',
+                                     work_experience='[]',
+                                     key_skills='[]',
+                                     education='[]',
+                                     post_as='[]')
+            resume_data.save()
+            # with connection.cursor() as cursor:
+            #     print(username, name, email, contact, '', '', [], [], [])
+            #     cursor.execute(
+            #         'INSERT INTO  "resumes_resumedata" ("username", "name", "email","contact",\
+            #         "job_title","personal_profile","work_experience","key_skills","education","post_as") VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',
+            #         (username, name, email, contact, '', '', '[]', '[]', '[]', '[]'))
             user.save()
             user = authenticate(username=username, password=password)
 

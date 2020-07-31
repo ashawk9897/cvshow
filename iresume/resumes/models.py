@@ -3,13 +3,17 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django import forms
 from django.contrib.postgres.fields import JSONField
-
+import json
 
 # Create your models here.
 def script_injection(value):
     if value.find('<script>') != -1:
         raise ValidationError(_('Script injection in %(value)s'),
                               params={'value': value})
+
+
+BLOG_QS = ["My journey at job", "My expectations from final year", "How my site is structured and django",
+           "How I used TDD to develop my app"]
 
 
 class Experience(models.Model):
@@ -76,6 +80,6 @@ class ResumeData(models.Model):
     work_experience = models.TextField(null=True)
     key_skills = models.TextField(null=True)
     education = models.TextField(null=True)
-    post_qs = models.TextField(null=True)
+    post_qs = models.TextField(default=json.dumps(BLOG_QS))
     post_as = models.TextField(null=True)
     # objects = models.DjongoManager()

@@ -45,6 +45,7 @@
         <div id="name">
             <h1 class="c_name">{{name}}</h1>
             <h2 class="c_name">{{job_title}}</h2>
+             <h1 class="c_name" id="blog_title" style="display:none;margin-left: 60%;margin-bottom: -5%;margin-top: 5%;">My Blog</h1>
         </div>
 
         <div id="contactDetails" class=" ">
@@ -182,12 +183,14 @@
             resume.style.display='none';
             resume_btn.style.display='block';
             blog_btn.style.display='none';
+            blog_title.style.display='block';
         }
         else if (id=="resume_btn"){
             blog.style.display='none';
             resume.style.display='block';
             resume_btn.style.display='none';
             blog_btn.style.display='block';
+            blog_title.style.display='none';
         }
 
 
