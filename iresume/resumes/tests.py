@@ -55,5 +55,30 @@ class ViewsTest(TestCase):
         data = {'key_skill': '  '}
         self.client.post(reverse('resumes:skills'), data)
         resume_user = ResumeData.objects.get(username=self.username)
-        data['key_skills']='[]'
+        data['key_skills'] = '[]'
         self.assertEqual(resume_user.key_skills, data['key_skills'])
+
+    def test_workexperience_update(self):
+        data = {'start': '12/12/2001',
+                'end': '12/12/2002',
+                'company_name': 'test_company',
+                'responsibility': 'test.test'}
+        self.client.post(reverse('resumes:work'), data)
+        data['responsibility'] = data['responsibility'].strip(' ').split('.')
+        data = [data]
+        resume_user = ResumeData.objects.get(username=self.username)
+        self.assertEqual(json.loads(resume_user.work_experience),
+                         data)
+
+    def test_education_update(self):
+        data = {'start': '12/12/2001',
+                'end': '12/12/2002',
+                'college_name': 'test_company',
+                'university': 'test_university',
+                'percentage': '20',
+                'qualification': 'tester'}
+        self.client.post(reverse('resumes:edu'), data)
+        data = [data]
+        resume_user = ResumeData.objects.get(username=self.username)
+        self.assertEqual(json.loads(resume_user.education),
+                         data)

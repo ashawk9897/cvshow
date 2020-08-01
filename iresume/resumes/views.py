@@ -89,7 +89,7 @@ def workexperience(request):
         company_name = request.POST.get('company_name')
         start = request.POST.get('start')
         end = request.POST.get('end')
-        responsibility = request.POST.get('responsibility')
+        responsibility = request.POST.get('responsibility', '')
         responsibility = responsibility.strip(' ').split('.')
         previous_data = ResumeData.objects.get(username=current_user)
         print(previous_data.work_experience)
