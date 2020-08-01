@@ -14,6 +14,7 @@ def script_injection(value):
 
 BLOG_QS = ["My journey at job", "My expectations from final year", "How my site is structured and django",
            "How I used TDD to develop my app"]
+BLOG_AS=['Not answered' for _ in BLOG_QS]
 
 
 class Experience(models.Model):
@@ -81,5 +82,5 @@ class ResumeData(models.Model):
     key_skills = models.TextField(null=True)
     education = models.TextField(null=True)
     post_qs = models.TextField(default=json.dumps(BLOG_QS))
-    post_as = models.TextField(null=True)
+    post_as = models.TextField(default=json.dumps(BLOG_AS))
     # objects = models.DjongoManager()

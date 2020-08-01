@@ -29,13 +29,7 @@ def cleandata(data):
             print(d.value)
             post_qs = json.loads(d.value)
         elif d.name == 'post_as':
-            print(d.value)
-            if d.value == '[]':
-                post_as = []
-                for q in post_qs:
-                    post_as.append('Not answered')
-            else:
-                post_as = json.loads(d.value)
+            post_as = json.loads(d.value)
         else:
             basicdata[d.name] = d.value
     basicdata.update({'work_experience': work_experience[::-1],
@@ -166,7 +160,8 @@ def posts(request):
         previous_data = ResumeData.objects.get(username=current_user)
         previous_data.post_qs = json.loads(previous_data.post_qs)
         previous_data.post_as = json.loads(previous_data.post_as)
-        if len(post) > 0 and len(previous_data.post_as) > int(post_id) >= 0:
+        print(previous_data.post_as)
+        if len(post) > 0 and len(previous_data.post_as) >= int(post_id) >= 0:
             previous_data.post_as[int(post_id)] = post
             try:
                 ResumeData.objects.filter(username=current_user).update(post_as=json.dumps(previous_data.post_as))
@@ -208,8 +203,7 @@ class UserFormView(View):
                                      personal_profile='',
                                      work_experience='[]',
                                      key_skills='[]',
-                                     education='[]',
-                                     post_as='[]')
+                                     education='[]')
             resume_data.save()
             user.save()
             user = authenticate(username=username, password=password)
