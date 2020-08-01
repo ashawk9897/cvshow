@@ -1,9 +1,14 @@
 
+        <div class="col-sm-10">
+            <H2 style="color:#48337c">Welcome To Job Hunt</H2>
+        </div>
 {% for field in form %}
 
         <div class="col-sm-offset-2 col-sm-10">
             <span class="text-danger small">{{ field.errors }}</span>
         </div>
-        <div class="col-sm-10">{{ field }}</div>
+        <div class="col-sm-10">
+            {{ field }}
+        </div>
 
 {% endfor %}
