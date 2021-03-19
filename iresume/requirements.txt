@@ -1,7 +1,7 @@
 asgiref==3.2.10
 Django>=3.0.5
 django-mysql==3.7.1
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 dnspython==1.16.0
 psycopg2==2.8.5
 PyMySQL==0.10.0
